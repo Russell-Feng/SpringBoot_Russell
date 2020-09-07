@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>统一监控平台登陆</title>
+    <!-- Bootstrap core CSS -->
+
+    <!-- Custom styles for this template -->
+    <link href="static/signin.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/bootstrap.min.css">
+    <script th:inline="javascript" language="javascript" type="text/javascript">
+        var code; //在全局 定义验证码
+
+        function createCode() {
+            code = new Array();
+            var codeLength = 4;//验证码的长度
+            var checkCode = document.getElementById("checkCode");
+            checkCode.value = "";
+
+            var selectChar = new Array(2, 3, 4, 5, 6, 7, 8, 9, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+
+            for (var i = 0; i < codeLength; i++) {
+                var charIndex = Math.floor(Math.random() * 32);
+                code += selectChar[charIndex];
+            }
+            if (code.length !== codeLength) {
+                createCode();
+            }
+            checkCode.value = code;
+        }
+
+        function validate() {
+            var inputCode = document.getElementById("input1").value.toUpperCase();
+
+            if (inputCode.length <= 0) {
+                alert("Please input the code!");
+                return false;
+            } else if (inputCode !== code) {
+                alert("error code!");
+                createCode();
+                return false;
+            } else {
+                //alert("success!");
+                return true;
+            }
+
+        }
+
+        function test() {
+            // $.ajax({
+            //     type: "post",
+            //     url: "/login",
+            //     data: {
+            //         name: name,
+            //     },
+            //     dataType: "json",
+            //     success: function(json) {
+            //         alert("danger!")
+            //     }
+            // });
+        }
+    </script>
+
+</head>
+<!-- 登陆失败红色的模态框-->
+<div class="modal modal-danger fade" id="modal-fail">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Failure!</h4>
+            </div>
+            <div class="modal-body">
+                <p>您输入的用户名/密码不正确！</p>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<body onload="createCode();">
+
+<div class="container">
+
+    <form class="form-signin" action="/login" method="post" autocomplete="off">
+        <!-- {% csrf_token %} -->
+        <div style="text-align:center">
+            <!-- <img src="{% static 'dist/img/logo1.png' %}" width="150" height="150"> -->
+            <img src="static/abc.png" width="250" height="250">
+        </div>
+        <h2 class="form-signin-heading" style="text-align:center">统一监控平台</h2>
+        <label for="inputUserName" class="sr-only">Email</label>
+        <input type="email" name="username" id="email" class="form-control" placeholder="User name" autocomplete="off" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
+        <!-- {% if error_message %} -->
+        <!-- <span>{{ error_message }}</span> -->
+        <!-- {% endif %} -->
+        <label for="inputCode" class="sr-only">Code</label>
+        <input class="form-control-new" style="width:60%" type="code" id="input1" placeholder="Code" maxlength="4" required/>
+        <input type="button" id="checkCode" class="code" style="width:30%" onClick="createCode()" />
+        <a href="#" onClick="createCode()"></a>
+
+        <button class="btn btn-lg btn-success btn-block" onClick="return validate()" type="submit">登陆</button>
+
+    </form>
+
+</div> <!-- /container -->
+</body>
+
+<!-- jQuery 3 -->
+<script src="static/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="static/bootstrap.min.js"></script>
+
+
+<script th:inline="javascript" language="javascript" type="text/javascript">
+    var ifsuccess = [[${hello}]];
+    if(ifsuccess == "false") {
+        $('#modal-fail').modal('show')
+    }
+</script>
+</html>
